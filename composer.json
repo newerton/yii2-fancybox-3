@@ -19,7 +19,7 @@
   "require": {
     "php": ">=5.4.0",
     "yiisoft/yii2": "*",
-    "bower-asset/fancybox": ">=3.x"
+    "bower-asset/fancybox": ">=3.0"
   },
   "autoload": {
     "psr-4": {
