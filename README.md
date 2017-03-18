@@ -6,6 +6,9 @@ jQuery lightbox script for displaying images, videos and more. Touch enabled, re
 Installation
 ------------
 
+- The minimum required PHP version is PHP 5.6 ([Concatenation](http://php.net/manual/en/language.oop5.properties.php)).
+- It works best with PHP 7.
+
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
 Either run
