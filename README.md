@@ -1,4 +1,4 @@
-yii2-fancybox
+yii2-fancybox-3
 =============
 
 jQuery lightbox script for displaying images, videos and more. Touch enabled, responsive and fully customizable. http://fancyapps.com/fancybox/3/
@@ -43,44 +43,56 @@ Options
 echo newerton\fancybox3\FancyBox::widget([
     'target' => '[data-fancybox]',
     'config' => [
-        // Animation duration in ms
-        'speed '        => 300,
-        
         // Enable infinite gallery navigation
-        'loop'          => true,
-        
-        // Should zoom animation change opacity, too
-        // If opacity is 'auto', then fade-out if image and thumbnail have different aspect ratios
-        'opacity'       => 'auto',
+        'loop'              => true,
         
         // Space around image, ignored if zoomed-in or viewport smaller than 800px
-        'margin'        => [44,0],
+        'margin'            => [44,0],
         
         // Horizontal space between slides
-        'gutter'        => 30,
+        'gutter'            => 30,
 
-        // Should display toolbars
-        'infobar'       => true,
-        'buttons'       => true,
+        // Enable keyboard navigation
+        'keyboard'          => true,
 
-        // What buttons should appear in the toolbar
-        'slideShow'     => true,
-        'fullScreen'    => true,
-        'thumbs'        => true,
-        'closeBtn'      => true,
+        // Should display navigation arrows at the screen edges
+        'arrows'            => true,
 
-        // Should apply small close button at top right corner of the content
-        // If 'auto' - will be set for content having type 'html', 'inline' or 'ajax'
-        'smallBtn'      => 'auto',
+        // Should display infobar (counter and arrows at the top)
+        'infobar'           => true,
         
-        'image'         => [      
+        // Should display toolbar (buttons at the top)
+        'toolbar'           => true,
+        
+        // What buttons should appear in the top right corner.
+        // Buttons will be created using templates from `btnTpl` option
+        // and they will be placed into toolbar (class="fancybox-toolbar"` element)
+        'buttons' => [
+            'slideShow',
+            'fullScreen',
+            'thumbs',
+            'close'    
+        ],
+
+        // Detect "idle" time in seconds
+        'idleTime'          => 4,
+        
+        // Should display buttons at top right corner of the content
+        // If 'auto' - they will be created for content having type 'html', 'inline' or 'ajax'
+        // Use template from `btnTpl.smallBtn` for customization
+        'smallBtn'          => 'auto',
+        
+        // Disable right-click and use simple image protection for images
+        'protect'           => false,
+        
+        // Shortcut to make content "modal" - disable keyboard navigtion, hide buttons, etc
+        'modal'             => false,
+        
+        'image' => [      
             // Wait for images to load before displaying
             // Requires predefined image dimensions
             // If 'auto' - will zoom in thumbnail if 'width' and 'height' attributes are found
-            'preload'       => "auto",
-
-            // Protect an image from downloading by right-click
-            'protect'       => false
+            'preload' => "auto",
         ],
         
         'ajax' => [
@@ -89,7 +101,7 @@ echo newerton\fancybox3\FancyBox::widget([
                 // This helps to indicate that request comes from the modal
                 // Feel free to change naming
                 'data' => [
-                    'fancybox'      => true
+                    'fancybox' => true
                 ]
             ]
         ],
@@ -101,25 +113,58 @@ echo newerton\fancybox3\FancyBox::widget([
 
             // Preload iframe before displaying it
             // This allows to calculate iframe content width and height
-            // (note=> Due to "Same Origin Policy", you can't get cross domain data).
-            'preload'       => true,
-
-            // Scrolling attribute for iframe tag
-            'scrolling'     => 'no',
+            // (note: Due to "Same Origin Policy", you can't get cross domain data).            'preload'       => true,
 
             // Custom CSS styling for iframe wrapping element
-            'css'           => []
+            'css'           => [],
 
+            // Iframe tag attributes
+            'attr'          => [
+                'scrolling' => 'auto'
+            ]
+            
         ],
         
-        // Custom CSS class for layout
-        'baseClass'         => '',
+        // Open/close animation type
+        // Possible values:
+        //   false            - disable
+        //   "zoom"           - zoom images from/to thumbnail
+        //   "fade"
+        //   "zoom-in-out"
+        //
+        'animationEffect'       => "zoom",
+
+        // Duration in ms for open/close animation
+        'animationDuration'     => 366,
+
+        // Should image change opacity while zooming
+        // If opacity is 'auto', then opacity will be changed if image and thumbnail have different aspect ratios
+        'zoomOpacity'           => 'auto',
+
+        // Transition effect between slides
+        //
+        // Possible values:
+        //   false            - disable
+        //   "fade'
+        //   "slide'
+        //   "circular'
+        //   "tube'
+        //   "zoom-in-out'
+        //   "rotate'
+        //
+        'transitionEffect'      => "fade",
+
+        // Duration in ms for transition animation
+        'transitionDuration'    => 366,
 
         // Custom CSS class for slide element
-        'slideClass'        => '',
+        'slideClass'            => '',
+
+        // Custom CSS class for layout
+        'baseClass'             => '',
 
         // Base template for layout
-        'baseTpl'	        => '<div class="fancybox-container" role="dialog" tabindex="-1">' .
+        'baseTpl' => '<div class="fancybox-container" role="dialog" tabindex="-1">' .
                 '<div class="fancybox-bg"></div>' .
                 '<div class="fancybox-controls">' .
                     '<div class="fancybox-infobar">' .
@@ -145,36 +190,172 @@ echo newerton\fancybox3\FancyBox::widget([
         // Error message template
         'errorTpl'          => '<div class="fancybox-error"><p>The requested content cannot be loaded. <br /> Please try again later.<p></div>',
 
-        // This will be appended to html content, if "smallBtn" option is not set to false
-        'closeTpl'          => '<button data-fancybox-close class="fancybox-close-small"></button>',
+        'btnTpl' => [
+            'slideShow'     => '<button data-fancybox-play class="fancybox-button fancybox-button--play" title="{{PLAY_START}}"></button>',
+            'fullScreen'    => '<button data-fancybox-fullscreen class="fancybox-button fancybox-button--fullscreen" title="{{FULL_SCREEN}}"></button>',
+            'thumbs'        => '<button data-fancybox-thumbs class="fancybox-button fancybox-button--thumbs" title="{{THUMBS}}"></button>',
+            'close'         => '<button data-fancybox-close class="fancybox-button fancybox-button--close" title="{{CLOSE}}"></button>',
+
+            // This small close button will be appended to your html/inline/ajax content by default,
+            // if "smallBtn" option is not set to false
+            'smallBtn'      => '<button data-fancybox-close class="fancybox-close-small" title="{{CLOSE}}"></button>'
+        ],
 
         // Container is injected into this element
         'parentEl'          => 'body',
+        
+        // Focus handling
+        // ==============
 
-        // Enable gestures (tap, zoom, pan and pinch)
-        'touch'             => true,
+        // Try to focus on the first focusable element after opening
+        'autoFocus'         => true,
 
-        // Enable keyboard navigation
-        'keyboard'          => true,
+        // Put focus back to active element after closing
+        'backFocus'         => true,
 
-        // Try to focus on first focusable element after opening
-        'focus'             => true,
+        // Do not let user to focus on element outside modal content
+        'trapFocus'         => true,
 
-        // Close when clicked outside of the content
-        'closeClickOutside' => true,
+
+        // Module specific options
+        // =======================
+
+        'fullScreen' => [
+            'autoStart'     => false,
+        ],
+
+        'touch' => [
+            'vertical'      => true,  // Allow to drag content vertically
+            'momentum'      => true   // Continue movement after releasing mouse/touch when panning
+        ],
+
+        // Hash value when initializing manually,
+        // set `false` to disable hash change
+        'hash'              => null,
+
+        // Customize or add new media types
+        // Example:
+        //
+        //  media' => {
+        //      youtube' => {
+        //          params' => {
+        //              autoplay' => 0
+        //          }
+        //      }
+        //  }
+        
+        'media' => [],
+
+        'slideShow' => [
+            'autoStart'     => false,
+            'speed'         => 4000
+        ],
+
+        'thumbs' => [
+            'autoStart'     => false,   // Display thumbnails on opening
+            'hideOnClose'   => true     // Hide thumbnail grid when closing animation starts
+        ],
 
         // Callbacks
+        //==========
+
+        // See Documentation/API/Events for more information
+        // Example:
+        //
+        //    afterShow: function( instance, current ) {
+        //         console.info( 'Clicked element:' );
+        //         console.info( current.opts.$orig );
+        //    }
+        
+        'onInit'            => new \yii\web\JsExpression('function(){ console.log("onInit"); }'),
+        
         'beforeLoad'        => new \yii\web\JsExpression('function(){ console.log("beforeLoad"); }'),
         'afterLoad'         => new \yii\web\JsExpression('function(){ console.log("afterLoad"); }'),
-        'beforeMove'        => new \yii\web\JsExpression('function(){ console.log("beforeMove"); }'),
-        'afterMove'         => new \yii\web\JsExpression('function(){ console.log("afterMove"); }'),
-        'onComplete'        => new \yii\web\JsExpression('function(){ console.log("onComplete"); }'),
 
-        'onInit'            => new \yii\web\JsExpression('function(){ console.log("onInit"); }'),
+        'beforeShow'        => new \yii\web\JsExpression('function(){ console.log("beforeShow"); }'),
+        'afterShow'         => new \yii\web\JsExpression('function(){ console.log("afterShow"); }'),
+        
         'beforeClose'       => new \yii\web\JsExpression('function(){ console.log("beforeClose"); }'),
         'afterClose'        => new \yii\web\JsExpression('function(){ console.log("afterClose"); }'),
+        
         'onActivate'        => new \yii\web\JsExpression('function(){ console.log("onActivate"); }'),
-        'onDeactivate'      => new \yii\web\JsExpression('function(){ console.log("onDeactivate"); }')
+        'onDeactivate'      => new \yii\web\JsExpression('function(){ console.log("onDeactivate"); }'),
+        
+        // Interaction
+        // ===========
+
+        // Use options below to customize taken action when user clicks or double clicks on the fancyBox area,
+        // each option can be string or method that returns value.
+        //
+        // Possible values:
+        //   "close"           - close instance
+        //   "next"            - move to next gallery item
+        //   "nextOrClose"     - move to next gallery item or close if gallery has only one item
+        //   "toggleControls"  - show/hide controls
+        //   "zoom"            - zoom image (if loaded)
+        //   false             - do nothing
+
+        // Clicked on the content
+        'clickContent'      => new \yii\web\JsExpression('function( current, event ) {
+            return current.type === "image" ? "zoom" : false;
+        }'),
+        
+        // Clicked on the slide
+        'clickSlide'        => 'close',
+
+        // Clicked on the background (backdrop) element
+        'clickOutside'      => 'close',
+
+        // Same as previous two, but for double click
+        'dblclickContent'   => false,
+        'dblclickSlide'     => false,
+        'dblclickOutside'   => false,
+
+
+        // Custom options when mobile device is detected
+        // =============================================
+
+        'mobile' => [
+            'clickContent'      => new \yii\web\JsExpression('function( current, event ) {
+                return current.type === "image" ? "toggleControls" : false;
+            }'),
+            'clickSlide'        => new \yii\web\JsExpression('function( current, event ) {
+                return current.type === "image" ? "toggleControls" : "close";
+            }'),
+            'dblclickContent'   => new \yii\web\JsExpression('function( current, event ) {
+                return current.type === "image" ? "zoom" : "close";
+            }'),
+            'dblclickSlide'     => new \yii\web\JsExpression('function( current, event ) {
+                return current.type === "image" ? "zoom" : "close";
+            }'),
+        ],
+
+        // Internationalization
+        // ============
+
+        'lang' => 'en',
+        'i18n' => [
+            'en' => [
+                'CLOSE'         => 'Close',
+                'NEXT'          => 'Next',
+                'PREV'          => 'Previous',
+                'ERROR'         => 'The requested content cannot be loaded. <br/> Please try again later.',
+                'PLAY_START'    => 'Start slideshow',
+                'PLAY_STOP'     => 'Pause slideshow',
+                'FULL_SCREEN'   => 'Full screen',
+                'THUMBS'        => 'Thumbnails'
+            ],
+            'de' => [
+                'CLOSE'         => 'Schliessen',
+                'NEXT'          => 'Weiter',
+                'PREV'          => 'Zurück',
+                'ERROR'         => 'Die angeforderten Daten konnten nicht geladen werden. <br/> Bitte versuchen Sie es später nochmal.',
+                'PLAY_START'    => 'Diaschau starten',
+                'PLAY_STOP'     => 'Diaschau beenden',
+                'FULL_SCREEN'   => 'Vollbild',
+                'THUMBS'        => 'Vorschaubilder'
+            ]
+        ]        
     ]
 ]);
 
