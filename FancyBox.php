@@ -35,7 +35,6 @@ class FancyBox extends Widget
      */
     public $config = [];
 
-
     /**
      * @inheritdoc
      */
