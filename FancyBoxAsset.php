@@ -23,7 +23,7 @@ class FancyBoxAsset extends AssetBundle
 
     public function registerAssetFiles($view)
     {
-        $this->js[] = 'dist/jquery.fancybox' . (!YII_DEBUG ? '.pack' : '') . '.js';
+        $this->js[] = 'dist/jquery.fancybox' . (!YII_DEBUG ? '.min' : '') . '.js';
         $this->css[] = 'dist/jquery.fancybox' . (!YII_DEBUG ? '.min' : '') . '.css';
         parent::registerAssetFiles($view);
     }
